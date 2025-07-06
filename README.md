@@ -111,33 +111,33 @@ DISCORD_GUILD_ID=your_guild_id
 ### Bot Setup / Настройка бота
 
 1. **Create Discord Application** / Создайте Discord приложение:
-   - Go to [Discord Developer Portal](https://discord.com/developers/applications)
-   - Create New Application
-   - Go to "Bot" section
-   - Copy the token
+   - Go to [Discord Developer Portal](https://discord.com/developers/applications) / Перейдите на Discord Developer Portal
+   - Create New Application / Создайте новое приложение
+   - Go to "Bot" section / Перейдите в раздел "Bot"
+   - Copy the token / Скопируйте токен
 
 2. **Invite Bot to Server** / Пригласите бота на сервер:
-   - Go to "OAuth2" → "URL Generator"
-   - Select scopes: `bot`, `applications.commands`
-   - Select permissions: `Send Messages`, `Use Slash Commands`, `Read Message History`
-   - Use the generated URL to invite the bot
+   - Go to "OAuth2" → "URL Generator" / Перейдите в "OAuth2" → "URL Generator"
+   - Select scopes: `bot`, `applications.commands` / Выберите области: `bot`, `applications.commands`
+   - Select permissions: `Send Messages`, `Use Slash Commands`, `Read Message History` / Выберите разрешения: `Send Messages`, `Use Slash Commands`, `Read Message History`
+   - Use the generated URL to invite the bot / Используйте сгенерированную ссылку для приглашения бота
 
 3. **Get Guild ID** / Получите ID сервера:
-   - Enable Developer Mode in Discord
-   - Right-click on your server → Copy Server ID
+   - Enable Developer Mode in Discord / Включите режим разработчика в Discord
+   - Right-click on your server → Copy Server ID / Щелкните правой кнопкой мыши на вашем сервере → Скопировать ID сервера
 
 ## Bot Commands / Команды бота
 
 ### `/set` - Configure forwarding / Настройка пересылки
-- Select source channel (канал-источник)
-- Select target channel (канал-назначения)
-- Bot will forward messages from source to target
+- Select source channel / Выберите канал-источник
+- Select target channel / Выберите канал-назначения
+- Bot will forward messages from source to target / Бот будет пересылать сообщения из источника в назначение
 
 ### `/help` - Show help / Показать справку
-- Displays available commands and usage
+- Displays available commands and usage / Отображает доступные команды и их использование
 
 ### `/status` - Show status / Показать статус
-- Shows current forwarding configuration
+- Shows bot status, forwarding configuration and uptime / Показывает статус бота, конфигурацию пересылки и время работы
 
 ## File Structure / Структура файлов
 
@@ -170,10 +170,8 @@ bot-snd-msg/
 
 ## License / Лицензия
 
-This project is open source and available under the MIT License.
-Этот проект с открытым исходным кодом и доступен под лицензией MIT.
+This project is open source and available under the MIT License. / Этот проект с открытым исходным кодом и доступен под лицензией MIT.
 
 ---
 
-**Note**: Make sure to keep your `.env` file secure and never commit it to version control.
-**Примечание**: Храните файл `.env` в безопасности и никогда не коммитьте его в систему контроля версий. 
+**Note**: Make sure to keep your `.env` file secure and never commit it to version control. / **Примечание**: Храните файл `.env` в безопасности и никогда не коммитьте его в систему контроля версий. 
