@@ -169,3 +169,6 @@ __pycache__/
 *.pyd
 .env.*
 .DS_Store
+
+# Не заливать docker-compose.yml (локальный файл)
+docker-compose.yml
