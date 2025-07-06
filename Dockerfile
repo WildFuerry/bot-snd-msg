@@ -4,15 +4,14 @@ FROM python:3.11-slim
 # Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем файлы зависимостей
-COPY pyproject.toml uv.lock ./
+# Копируем зависимости
+COPY requirements.txt ./
 
 # Устанавливаем зависимости
-RUN pip install --no-cache-dir -e .
-RUN pip install --no-cache-dir python-dotenv
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем код приложения
-COPY main.py config.json ./
+COPY main.py ./
 
 # Создаем пользователя для безопасности
 RUN useradd -m -u 1000 botuser && chown -R botuser:botuser /app
