@@ -161,23 +161,17 @@ bot-snd-msg/
    - Ensure bot has required permissions / Убедитесь, что у бота есть нужные права
 
 2. **Commands not working** / Команды не работают:
-   - Check if bot has `applications.commands` scope / Проверьте scope `applications.commands`
+   - Check if bot has `applications.commands` scope / Проверьте область `applications.commands` у бота
    - Wait for commands to register (may take up to 1 hour) / Подождите регистрации команд (до 1 часа)
 
 3. **Docker issues** / Проблемы с Docker:
    - Check if ports are available / Проверьте доступность портов
    - Ensure Docker daemon is running / Убедитесь, что Docker демон запущен
 
-## Contributing / Вклад в проект
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
 ## License / Лицензия
 
 This project is open source and available under the MIT License.
+Этот проект с открытым исходным кодом и доступен под лицензией MIT.
 
 ---
 
