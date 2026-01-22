@@ -30,8 +30,9 @@ cd bot-snd-msg
 2. **Create environment file** / Создайте файл окружения:
 ```bash
 # Create .env file
-echo "DISCORD_TOKEN=your_discord_token_here" > .env
-echo "DISCORD_GUILD_ID=your_guild_id_here" >> .env
+echo "BOT_TOKEN=your_discord_token_here" > .env
+echo "TELEGRAM_TOKEN=your_guild_id_here" >> .env
+echo "TTELEGRAM_GROUP_ID=your_guild_id_here" >> .env
 ```
 
 3. **Create docker-compose.yml** / Создайте docker-compose.yml:
