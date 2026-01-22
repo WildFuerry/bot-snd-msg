@@ -105,9 +105,9 @@ python main.py
 Create a `.env` file in the project root: / Создайте файл `.env` в корне проекта:
 
 ```env
-BOT_TOKEN=your_discord_token_here"
-TELEGRAM_TOKEN=your_guild_id_here"
-TTELEGRAM_GROUP_ID=your_guild_id_here"
+BOT_TOKEN=your_discord_token_here
+TELEGRAM_TOKEN=your_guild_id_here
+TTELEGRAM_GROUP_ID=your_guild_id_here
 ```
 
 ### Bot Setup / Настройка бота
