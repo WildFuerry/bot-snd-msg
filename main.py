@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 logging.getLogger('discord').setLevel(logging.WARNING)
 
 CONFIG_FILE = 'config.json'
-SOURCE_CHANNEL_ID = 1285328785033400471
+SOURCE_CHANNEL_ID = 1390799684091777134
 CHANNELS = {
     'новости': 1195304040188358666, 
     'ивент-события': 1196468248603009116,
