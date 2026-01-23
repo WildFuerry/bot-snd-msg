@@ -42,8 +42,8 @@ logging.getLogger('discord').setLevel(logging.WARNING)
 CONFIG_FILE = 'config.json'
 SOURCE_CHANNEL_ID = 1285328785033400471
 CHANNELS = {
-    'новости': 1390790589653585920, 
-    'ивент-события': 1390790628807282901,
+    'новости': 1195304040188358666, 
+    'ивент-события': 1196468248603009116,
 }
 TRSH_DIR = 'trsh'
 
