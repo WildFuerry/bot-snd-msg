@@ -16,6 +16,7 @@ COPY main.py ./
 # Создаем пользователя для безопасности
 RUN useradd -m -u 1000 botuser && chown -R botuser:botuser /app
 USER botuser
+RUN mkdir -p /app/trsh && chown -R botuser:botuser /app/trsh
 
 # Запускаем бота
 CMD ["python", "main.py"] 
