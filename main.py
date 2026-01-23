@@ -46,6 +46,7 @@ CHANNELS = {
     'ивент-события': 1196468248603009116,
 }
 TRSH_DIR = 'trsh'
+os.makedirs(TRSH_DIR, exist_ok=True)
 
 intents = discord.Intents.default()
 intents.messages = True
