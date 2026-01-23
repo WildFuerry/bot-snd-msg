@@ -10,12 +10,19 @@ COPY requirements.txt ./
 # Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Создаем пользователя для безопасности
+RUN useradd -m -u 1000 botuser
+
+# Создаем директорию для временных файлов с правильными правами
+RUN mkdir -p /app/trsh && chmod 775 /app/trsh
+
 # Копируем код приложения
 COPY main.py ./
 
-# Создаем пользователя для безопасности
-RUN useradd -m -u 1000 botuser && chown -R botuser:botuser /app
-RUN mkdir -p /app/trsh && chown -R botuser:botuser /app/trsh
+# Устанавливаем владельца для всех файлов и директорий
+RUN chown -R botuser:botuser /app
+
+# Переключаемся на пользователя botuser
 USER botuser
 
 
