@@ -12,18 +12,34 @@ jobs:
     steps:
       - name: Send commit info to Discord
         if: github.event_name == 'push'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          curl -H "Content-Type: application/json" \
-          -d "{
-            \"content\": \"📦 **Репозиторий:** ${{ github.repository }}\n🌿 **Ветка:** ${{ github.ref_name }}\n💬 **Коммит:** ${{ github.event.head_commit.message }}\n👤 **Автор:** ${{ github.event.head_commit.author.name }}\n🔗 ${{ github.event.head_commit.url }}\"
-          }" \
-          ${{ secrets.DISCORD_WEBHOOK }}
+          python - <<'PY' | curl -sS -X POST -H "Content-Type: application/json" --data-binary @- "$DISCORD_WEBHOOK"
+          import json
+          content = (
+              f"📦 **Репозиторий:** ${{{{ github.repository }}}}\n"
+              f"🌿 **Ветка:** ${{{{ github.ref_name }}}}\n"
+              f"💬 **Коммит:** ${{{{ github.event.head_commit.message }}}}\n"
+              f"👤 **Автор:** ${{{{ github.event.head_commit.author.name }}}}\n"
+              f"🔗 ${{{{ github.event.head_commit.url }}}}"
+          )
+          print(json.dumps({"content": content}, ensure_ascii=False))
+          PY
 
       - name: Send release info to Discord
         if: github.event_name == 'release'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
-          curl -H "Content-Type: application/json" \
-          -d "{
-            \"content\": \"🚀 **Новый релиз!**\n📦 **Репозиторий:** ${{ github.repository }}\n🏷 **Версия:** ${{ github.event.release.tag_name }}\n📝 **Название:** ${{ github.event.release.name }}\n🔗 ${{ github.event.release.html_url }}\"
-          }" \
-          ${{ secrets.DISCORD_WEBHOOK }}
+          python - <<'PY' | curl -sS -X POST -H "Content-Type: application/json" --data-binary @- "$DISCORD_WEBHOOK"
+          import json
+          content = (
+              f"🚀 **Новый релиз!**\n"
+              f"📦 **Репозиторий:** ${{{{ github.repository }}}}\n"
+              f"🏷 **Версия:** ${{{{ github.event.release.tag_name }}}}\n"
+              f"📝 **Название:** ${{{{ github.event.release.name }}}}\n"
+              f"🔗 ${{{{ github.event.release.html_url }}}}"
+          )
+          print(json.dumps({"content": content}, ensure_ascii=False))
+          PY
