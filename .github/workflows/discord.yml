@@ -10,8 +10,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Do not use secrets.* inside `if:` — GitHub may not evaluate it reliably; steps could be skipped with no error.
+      - name: Require DISCORD_WEBHOOK (push)
+        if: github.event_name == 'push'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "::error::Repository secret DISCORD_WEBHOOK is empty. Add it: Settings → Secrets and variables → Actions → New repository secret"
+            exit 1
+          fi
+
+      - name: Require DISCORD_WEBHOOK (release)
+        if: github.event_name == 'release'
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK" ]; then
+            echo "::error::Repository secret DISCORD_WEBHOOK is empty. Add it: Settings → Secrets and variables → Actions → New repository secret"
+            exit 1
+          fi
+
       - name: Send commit info to Discord
-        if: github.event_name == 'push' && secrets.DISCORD_WEBHOOK != ''
+        if: github.event_name == 'push'
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           REPO: ${{ github.repository }}
@@ -46,7 +67,7 @@ jobs:
           PY
 
       - name: Send release info to Discord
-        if: github.event_name == 'release' && secrets.DISCORD_WEBHOOK != ''
+        if: github.event_name == 'release'
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           REPO: ${{ github.repository }}
