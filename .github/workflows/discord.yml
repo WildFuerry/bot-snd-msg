@@ -1,0 +1,29 @@
+name: Discord Notifications
+
+on:
+  push:
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send commit info to Discord
+        if: github.event_name == 'push'
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{
+            \"content\": \"📦 **Репозиторий:** ${{ github.repository }}\n🌿 **Ветка:** ${{ github.ref_name }}\n💬 **Коммит:** ${{ github.event.head_commit.message }}\n👤 **Автор:** ${{ github.event.head_commit.author.name }}\n🔗 ${{ github.event.head_commit.url }}\"
+          }" \
+          ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Send release info to Discord
+        if: github.event_name == 'release'
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{
+            \"content\": \"🚀 **Новый релиз!**\n📦 **Репозиторий:** ${{ github.repository }}\n🏷 **Версия:** ${{ github.event.release.tag_name }}\n📝 **Название:** ${{ github.event.release.name }}\n🔗 ${{ github.event.release.html_url }}\"
+          }" \
+          ${{ secrets.DISCORD_WEBHOOK }}
