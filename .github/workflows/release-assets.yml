@@ -35,6 +35,21 @@ jobs:
           (cd "$SRC_ROOT" && zip -r "${GITHUB_WORKSPACE}/bot-snd-msg-source-${TAG}.zip" bot-snd-msg)
           (cd "$DCK_ROOT" && zip -r "${GITHUB_WORKSPACE}/bot-snd-msg-docker-${TAG}.zip" bot-snd-msg-docker)
 
+      - name: Verify split archives (no .github / workflows)
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          for zip in \
+            "${GITHUB_WORKSPACE}/bot-snd-msg-source-${TAG}.zip" \
+            "${GITHUB_WORKSPACE}/bot-snd-msg-docker-${TAG}.zip"
+          do
+            if unzip -l "$zip" | grep -E '\.github/|\.github\\|release-assets\.yml|discord\.yml'; then
+              echo "ERROR: forbidden path leaked into $zip"
+              exit 1
+            fi
+          done
+
       - name: Upload archives to the release
         env:
           GH_TOKEN: ${{ github.token }}

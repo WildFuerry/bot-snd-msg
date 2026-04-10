@@ -215,7 +215,7 @@ When you publish a GitHub Release, two extra assets are uploaded automatically /
 - **`bot-snd-msg-source-<tag>.zip`** — Python source only (`main.py`, `requirements.txt`, `README.md`, `config.example.json`, `.gitignore`, `.gitattributes`) / только исходники Python
 - **`bot-snd-msg-docker-<tag>.zip`** — Docker bundle (`docker-compose.yml`, `Dockerfile`, `.dockerignore`, `config.example.json`, `README.md`) / отдельный пакет для Docker
 
-The default “Source code” download from GitHub still includes the full tree / стандартная кнопка “Source code” на релизе по-прежнему отдаёт полное дерево репозитория.
+The default “Source code” download from GitHub follows Git’s export rules (see `.gitattributes`) / стандартная кнопка “Source code” на релизе следует правилам экспорта Git (см. `.gitattributes`).
 
 ## License / Лицензия
 
