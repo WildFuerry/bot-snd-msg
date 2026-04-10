@@ -1,0 +1,8 @@
+{
+  "source_channel_id": 123456789012345678,
+  "channels": {
+    "news": 123456789012345678,
+    "events": 123456789012345678
+  },
+  "target_channel_id": null
+}

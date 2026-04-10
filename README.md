@@ -17,9 +17,16 @@ Discord bot for forwarding messages between channels, with Telegram sync / Disco
 
 #### Prerequisites / Требования
 - Docker
-- Docker Compose
+- Docker Compose (plugin) / Docker Compose (плагин)
 
 #### Setup / Настройка
+
+This project can be started with Docker in two ways / Этот проект можно запустить через Docker двумя способами:
+
+- **Option A (Code)**: clone this repository and run `docker compose up` / **Вариант A (Код)**: клонируйте репозиторий и запустите в каталоге проекта `docker compose up`
+- **Option B (Compose-only)**: download only `docker-compose.yml` (and `.env`) — Compose will build from GitHub / **Вариант B (Только compose)**: скачайте только `docker-compose.yml` (и `.env`) — Compose соберёт образ из GitHub
+
+##### Option A (Code) / Вариант A (Код)
 
 1. **Clone the repository** / Клонируйте репозиторий:
 ```bash
@@ -27,7 +34,11 @@ git clone https://github.com/WildFuerry/bot-snd-msg.git
 cd bot-snd-msg
 ```
 
-2. **Create environment file** / Создайте файл окружения:
+2. **Create config file (required)** / Создайте конфиг (обязательно):
+
+Copy `config.example.json` → `config.json` and fill it / Скопируйте `config.example.json` → `config.json` и заполните.
+
+3. **Create environment file** / Создайте файл окружения:
 ```bash
 # Create .env file (example)
 echo "BOT_TOKEN=your_discord_token_here" > .env
@@ -35,37 +46,50 @@ echo "TELEGRAM_TOKEN=your_telegram_bot_token_here" >> .env
 echo "TELEGRAM_GROUP_ID=your_telegram_group_id_here" >> .env
 ```
 
-3. **Create docker-compose.yml** / Создайте docker-compose.yml:
-```yaml
-version: '3.8'
-services:
-  discord-bot:
-    build: .
-    container_name: discord-bot
-    restart: unless-stopped
-    env_file:
-      - .env
-    volumes:
-      - ./config.json:/app/config.json
-      - ./temp:/app/temp
-    environment:
-      - PYTHONUNBUFFERED=1
-```
-
 4. **Run with Docker Compose** / Запустите с Docker Compose:
 ```bash
-docker-compose up -d
+docker compose up -d --build
 ```
 
 5. **View logs** / Просмотр логов:
 ```bash
-docker-compose logs -f discord-bot
+docker compose logs -f bot-send-msg
 ```
 
 6. **Stop the bot** / Остановка бота:
 ```bash
-docker-compose down
+docker compose down
 ```
+
+##### Option B (Compose-only) / Вариант B (Только compose)
+
+1. **Create a folder and download files** / **Создайте папку и скачайте файлы**:
+   - `docker-compose.yml`
+   - `.env`
+   - `config.json` (create from `config.example.json`) / `config.json` (создайте по `config.example.json`)
+
+2. **Fill `config.json` (required)** / **Заполните `config.json` (обязательно)**:
+
+Use `config.example.json` as a template / Возьмите `config.example.json` как шаблон.
+
+3. **Fill `.env`** / **Заполните `.env`**:
+```env
+BOT_TOKEN=your_discord_token_here
+TELEGRAM_TOKEN=your_telegram_bot_token_here
+TELEGRAM_GROUP_ID=your_telegram_group_id_here
+```
+
+4. **Start** / **Запуск**:
+```bash
+docker compose up -d --build
+```
+
+5. **Logs** / **Логи**:
+```bash
+docker compose logs -f bot-send-msg
+```
+
+Note / Примечание: `docker-compose.yml` builds from GitHub (`build.context` points to the repository). You need internet access on the machine running Docker / `docker-compose.yml` собирает образ из GitHub (через `build.context`), поэтому машине с Docker нужен доступ в интернет.
 
 ### Method 2: Python Direct / Способ 2: Python напрямую
 
@@ -110,6 +134,19 @@ BOT_TOKEN=your_discord_token_here
 TELEGRAM_TOKEN=your_telegram_bot_token_here
 TELEGRAM_GROUP_ID=your_telegram_group_id_here
 ```
+
+### Config file / Конфиг-файл
+
+Create `config.json` (you can start from `config.example.json`) / Создайте `config.json` (можно начать с `config.example.json`).
+
+Required fields / Обязательные поля:
+
+- `source_channel_id`: source channel ID / ID исходного канала
+- `channels`: map of display name → channel ID / словарь “имя для меню” → ID канала
+
+Optional / Необязательно:
+
+- `target_channel_id`: current selected target channel (also set by `/set`) / текущий целевой канал (также задаётся командой `/set`)
 
 ### Bot Setup / Настройка бота
 

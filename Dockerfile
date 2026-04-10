@@ -1,21 +1,21 @@
 # Используем официальный Python образ
 FROM python:3.11-slim
 
-# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем зависимости
+# Копируем зависимости и устанавливаем их (лучше кешируется слоями)
 COPY requirements.txt ./
-
-# Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копируем код приложения
-COPY main.py ./
+# Копируем проект (Dockerfile/README/.github исключаются через .dockerignore при необходимости)
+COPY . ./
 
-# Создаем пользователя для безопасности
-RUN useradd -m -u 1000 botuser && chown -R botuser:botuser /app
+# Директория для временных файлов должна существовать и быть доступной на запись
+RUN mkdir -p /app/trsh \
+  && useradd -m -u 1000 botuser \
+  && chown -R botuser:botuser /app
+
+ENV PYTHONUNBUFFERED=1
+
 USER botuser
-
-# Запускаем бота
-CMD ["python", "main.py"] 
+CMD ["python", "main.py"]

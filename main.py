@@ -40,12 +40,121 @@ logger = logging.getLogger(__name__)
 logging.getLogger('discord').setLevel(logging.WARNING)
 
 CONFIG_FILE = 'config.json'
-SOURCE_CHANNEL_ID = 1285328785033400471
-CHANNELS = {
-    'новости': 1195304040188358666, 
-    'ивент-события': 1196468248603009116,
-}
+
+# Runtime-configured values (initialized in main()).
+SOURCE_CHANNEL_ID: Optional[int] = None
+CHANNELS: dict[str, int] = {}
 TRSH_DIR = 'trsh'
+
+
+def _parse_int_env(name: str) -> Optional[int]:
+    raw = os.getenv(name)
+    if raw is None or raw == "":
+        return None
+    try:
+        return int(raw)
+    except ValueError:
+        logger.error(f"Некорректное значение переменной окружения {name}: {raw!r} (ожидается число)")
+        return None
+
+
+def _load_channels_from_env() -> Optional[dict]:
+    """
+    CHANNELS_JSON should be a JSON object: {"новости": 123, "ивент-события": 456}
+    """
+    raw = os.getenv("CHANNELS_JSON")
+    if raw is None or raw.strip() == "":
+        return None
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError as e:
+        logger.error(f"Некорректный JSON в CHANNELS_JSON: {e}")
+        return None
+    if not isinstance(parsed, dict):
+        logger.error("CHANNELS_JSON должен быть JSON-объектом (словарём) name->id")
+        return None
+
+    result: dict[str, int] = {}
+    for k, v in parsed.items():
+        if not isinstance(k, str) or not k.strip():
+            logger.error("CHANNELS_JSON содержит пустой/некорректный ключ канала")
+            return None
+        try:
+            channel_id = int(v)
+        except (TypeError, ValueError):
+            logger.error(f"CHANNELS_JSON: id канала для {k!r} должен быть числом, получено: {v!r}")
+            return None
+        result[k.strip().lower()] = channel_id
+
+    if not result:
+        logger.error("CHANNELS_JSON пустой — нужен хотя бы один канал")
+        return None
+    return result
+
+
+def init_runtime_config() -> None:
+    global SOURCE_CHANNEL_ID, CHANNELS, CONFIG_FILE
+
+    cfg_file = os.getenv('CONFIG_FILE')
+    if cfg_file:
+        CONFIG_FILE = cfg_file
+
+    # Load from config file (optional) first, then let env override.
+    if os.path.exists(CONFIG_FILE):
+        try:
+            with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            if isinstance(data, dict):
+                if SOURCE_CHANNEL_ID is None:
+                    src = data.get("source_channel_id")
+                    if src is not None:
+                        try:
+                            SOURCE_CHANNEL_ID = int(src)
+                        except (TypeError, ValueError):
+                            logger.error(f"config: source_channel_id должен быть числом, получено: {src!r}")
+                if not CHANNELS:
+                    ch = data.get("channels")
+                    if ch is not None:
+                        if isinstance(ch, dict):
+                            parsed: dict[str, int] = {}
+                            for k, v in ch.items():
+                                if not isinstance(k, str) or not k.strip():
+                                    logger.error("config: channels содержит пустой/некорректный ключ")
+                                    parsed = {}
+                                    break
+                                try:
+                                    parsed[k.strip().lower()] = int(v)
+                                except (TypeError, ValueError):
+                                    logger.error(f"config: channels[{k!r}] должен быть числом, получено: {v!r}")
+                                    parsed = {}
+                                    break
+                            if parsed:
+                                CHANNELS = parsed
+                        else:
+                            logger.error("config: channels должен быть объектом (словарём) name->id")
+        except json.JSONDecodeError as e:
+            logger.error(f"Ошибка чтения {CONFIG_FILE}: {e}")
+        except Exception as e:
+            logger.error(f"Ошибка загрузки {CONFIG_FILE}: {e}")
+
+    source_id = _parse_int_env("SOURCE_CHANNEL_ID")
+    if source_id is not None:
+        SOURCE_CHANNEL_ID = source_id
+
+    channels = _load_channels_from_env()
+    if channels is not None:
+        CHANNELS = channels
+
+
+def validate_runtime_config() -> bool:
+    ok = True
+    if SOURCE_CHANNEL_ID is None:
+        logger.error("SOURCE_CHANNEL_ID не задан. Укажите его в .env / переменных окружения.")
+        ok = False
+    if not CHANNELS:
+        logger.error("CHANNELS_JSON не задан или пуст. Укажите словарь каналов в .env / переменных окружения.")
+        ok = False
+    return ok
 
 intents = discord.Intents.default()
 intents.messages = True
@@ -909,6 +1018,9 @@ async def on_message_delete(message: discord.Message):
 def main():
     """Точка входа: запуск бота"""
     load_dotenv()
+    init_runtime_config()
+    if not validate_runtime_config():
+        return
     token = os.getenv('BOT_TOKEN')
     if not token:
         logger.error("Переменная окружения BOT_TOKEN не задана!")

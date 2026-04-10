@@ -170,5 +170,7 @@ __pycache__/
 .env.*
 .DS_Store
 
-# Не заливать docker-compose.yml (локальный файл)
-docker-compose.yml
+## docker-compose.yml держим в репозитории
+
+# Local commit message drafts
+commit-msg.MD

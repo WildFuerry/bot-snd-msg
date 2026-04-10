@@ -1,0 +1,13 @@
+services:
+  bot-send-msg:
+    build:
+      context: https://github.com/WildFuerry/bot-snd-msg.git#main
+    container_name: bot-send-msg
+    deploy:
+      replicas: 1
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./trsh:/app/trsh
+      - ./config.json:/app/config.json
