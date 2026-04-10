@@ -1,2 +1,11 @@
 *.yml  text eol=lf
 *.yaml text eol=lf
+
+# Exclude GitHub Actions config from source exports (releases / download zip)
+.github/ export-ignore
+
+# Exclude local/auxiliary files from source exports
+commit-msg.MD export-ignore
+commit-msg.txt export-ignore
+1.txt export-ignore
+.env export-ignore

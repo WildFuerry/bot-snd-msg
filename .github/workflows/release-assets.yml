@@ -1,0 +1,45 @@
+name: Release split archives
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  upload-split-archives:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Build source-only and Docker archives
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          SRC_ROOT=$(mktemp -d)
+          DCK_ROOT=$(mktemp -d)
+          mkdir -p "$SRC_ROOT/bot-snd-msg"
+          mkdir -p "$DCK_ROOT/bot-snd-msg-docker"
+
+          git archive HEAD --format=tar \
+            main.py requirements.txt README.md config.example.json .gitignore .gitattributes \
+            | tar -x -C "$SRC_ROOT/bot-snd-msg"
+
+          cp docker-compose.yml Dockerfile .dockerignore config.example.json README.md \
+            "$DCK_ROOT/bot-snd-msg-docker/"
+
+          (cd "$SRC_ROOT" && zip -r "${GITHUB_WORKSPACE}/bot-snd-msg-source-${TAG}.zip" bot-snd-msg)
+          (cd "$DCK_ROOT" && zip -r "${GITHUB_WORKSPACE}/bot-snd-msg-docker-${TAG}.zip" bot-snd-msg-docker)
+
+      - name: Upload archives to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            "bot-snd-msg-source-${{ github.event.release.tag_name }}.zip" \
+            "bot-snd-msg-docker-${{ github.event.release.tag_name }}.zip" \
+            --clobber

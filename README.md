@@ -208,6 +208,15 @@ bot-snd-msg/
    - Check if ports are available / Проверьте доступность портов
    - Ensure Docker daemon is running / Убедитесь, что Docker демон запущен
 
+## Releases / Релизы
+
+When you publish a GitHub Release, two extra assets are uploaded automatically / После публикации GitHub Release автоматически добавляются два архива:
+
+- **`bot-snd-msg-source-<tag>.zip`** — Python source only (`main.py`, `requirements.txt`, `README.md`, `config.example.json`, `.gitignore`, `.gitattributes`) / только исходники Python
+- **`bot-snd-msg-docker-<tag>.zip`** — Docker bundle (`docker-compose.yml`, `Dockerfile`, `.dockerignore`, `config.example.json`, `README.md`) / отдельный пакет для Docker
+
+The default “Source code” download from GitHub still includes the full tree / стандартная кнопка “Source code” на релизе по-прежнему отдаёт полное дерево репозитория.
+
 ## License / Лицензия
 
 This project is open source and available under the MIT License. / Этот проект с открытым исходным кодом и доступен под лицензией MIT.
